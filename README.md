@@ -40,7 +40,7 @@ Stream Beaver is a project that provides an API for consuming MQTT messages and 
    }
    ```
 
-   _Or you could map all of the messages to a single topic_
+   _Or you could map all of the messages to a single MongoDB collection:_
 
    ```json
    {
