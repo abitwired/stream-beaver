@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    networks:
+      - mqtt-network
+    hostname: mqtt-broker
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mqtt-network
+
+  mqtt-to-mongodb:
+    image: node:latest
+    container_name: mqtt-to-mongodb
+    volumes:
+      - ./mongo/mqtt-to-mongodb.js:/app/mqtt-to-mongodb.js
+      - ./mongo/package.json:/app/package.json
+      - ./mongo/package-lock.json:/app/package-lock.json
+      - ./config.json:/app/config.json
+    working_dir: /app
+    command: ["sh", "-c", "npm install && node mqtt-to-mongodb.js"]
+    depends_on:
+      - mqtt-broker
+      - mongo
+    networks:
+      - mqtt-network
+
+  fastapi:
+    image: tiangolo/uvicorn-gunicorn-fastapi:python3.8
+    container_name: fastapi
+    # Install requirements.txt before running the API
+    command:
+      [
+        "sh",
+        "-c",
+        "pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 8000",
+      ]
+    volumes:
+      - ./api:/app
+      - ./config.json:/app/config.json
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    networks:
+      - mqtt-network
+
+volumes:
+  mosquitto-data:
+  mosquitto-log:
+  mongo-data:
+
+networks:
+  mqtt-network:
+    driver: bridge

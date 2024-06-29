@@ -1,0 +1,13 @@
+{
+  "topicMappings": {
+    "gsm_message": "network_survey",
+    "cdma_message": "network_survey",
+    "umts_message": "network_survey",
+    "lte_message": "network_survey",
+    "nr_message": "network_survey",
+    "80211_beacon_message": "network_survey",
+    "bluetooth_message": "network_survey",
+    "gnss_message": "network_survey",
+    "device_status_message": "device_status"
+  }
+}
