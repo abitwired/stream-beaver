@@ -5,7 +5,7 @@ from typing import List, Optional
 import json
 
 app = FastAPI(
-    title="MQTT to MongoDB API",
+    title="Stream Beaver API",
     description="API for consuming MQTT messages and storing them in MongoDB, with endpoints to retrieve the data.",
     version="1.0.0",
 )

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mqtt-broker:
     image: eclipse-mosquitto:latest
@@ -13,6 +11,8 @@ services:
     networks:
       - mqtt-network
     hostname: mqtt-broker
+    labels:
+      kompose.service.type: LoadBalancer
 
   mongo:
     image: mongo:latest
@@ -23,14 +23,15 @@ services:
       - mongo-data:/data/db
     networks:
       - mqtt-network
+    labels:
+      kompose.service.type: LoadBalancer
 
   mqtt-to-mongodb:
-    image: node:latest
+    image: node:22-slim
     container_name: mqtt-to-mongodb
     volumes:
       - ./mongo/mqtt-to-mongodb.js:/app/mqtt-to-mongodb.js
       - ./mongo/package.json:/app/package.json
-      - ./mongo/package-lock.json:/app/package-lock.json
       - ./config.json:/app/config.json
     working_dir: /app
     command: ["sh", "-c", "npm install && node mqtt-to-mongodb.js"]
@@ -43,15 +44,15 @@ services:
   fastapi:
     image: tiangolo/uvicorn-gunicorn-fastapi:python3.8
     container_name: fastapi
-    # Install requirements.txt before running the API
-    command:
-      [
+    command: [
         "sh",
         "-c",
+        # Install requirements.txt before running the API
         "pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 8000",
       ]
     volumes:
-      - ./api:/app
+      - ./api/main.py:/app/main.py
+      - ./api/requirements.txt:/app/requirements.txt
       - ./config.json:/app/config.json
     ports:
       - "8000:8000"
@@ -59,6 +60,8 @@ services:
       - mongo
     networks:
       - mqtt-network
+    labels:
+      kompose.service.type: LoadBalancer
 
 volumes:
   mosquitto-data:

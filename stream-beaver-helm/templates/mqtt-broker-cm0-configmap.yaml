@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  mosquitto.conf: |-
+    listener 1883
+    persistence true
+    allow_anonymous true
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: mqtt-broker
+  name: mqtt-broker-cm0

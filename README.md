@@ -1,6 +1,6 @@
-# Stream Beaver
-
 <img src="./assets/images/stream-beaver-logo.png" width="300" alt="Stream Beaver Logo">
+
+# Stream Beaver
 
 Stream Beaver is a project that provides an API for consuming MQTT messages and storing them in MongoDB, with endpoints to retrieve the data. It includes a FastAPI application for handling HTTP requests and a Node.js script (`mqtt-to-mongodb.js`) for subscribing to MQTT messages and inserting them into MongoDB.
 
@@ -9,6 +9,14 @@ Stream Beaver is a project that provides an API for consuming MQTT messages and 
 - **MQTT Broker**: Uses Eclipse Mosquitto as the MQTT broker.
 - **MongoDB**: Stores MQTT messages in MongoDB collections based on topic mappings.
 - **FastAPI**: Provides HTTP endpoints for interacting with MongoDB collections and retrieving MQTT data.
+
+Use the configuration file `config.json` to map MQTT topics to MongoDB collections. The `mqtt-to-mongodb.js` script subscribes to MQTT topics and inserts messages into the corresponding MongoDB collections. It is also used by the FastAPI application to retrieve messages from MongoDB since we can do a reverse lookup of the collection based on the topic provided. The FastAPI application provides endpoints to retrieve messages by collection, message ID, and topic, as well as create and delete messages.
+
+By default, the FastAPI application runs on port 8000, and the MQTT broker runs on port 1883. You can access the FastAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs) or [http://localhost:8000/redoc](http://localhost:8000/redoc).
+
+## Architecture
+
+![Stream Beaver Architecture](./assets/images/stream-beaver-diagram.png)
 
 ## Requirements
 
@@ -69,6 +77,19 @@ Stream Beaver is a project that provides an API for consuming MQTT messages and 
 
    - OpenAPI (Swagger UI): [http://localhost:8000/docs](http://localhost:8000/docs)
    - ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+## Installing with Kubernetes
+
+```bash
+cd stream-beaver-helm
+helm install stream-beaver .
+```
+
+If you want to rebuild the kubernetes resources, you can install `kompose` and run the following command:
+
+```bash
+kompose convert -c -f docker-compose.yaml -o stream-beaver-helm
+```
 
 ## API Endpoints
 

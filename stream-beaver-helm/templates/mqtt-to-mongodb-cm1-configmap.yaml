@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  package.json: |
+    {
+      "name": "mqtt-to-mongodb",
+      "version": "1.0.0",
+      "description": "A service to consume MQTT messages and store them in MongoDB",
+      "main": "mqtt-to-mongodb.js",
+      "scripts": {
+        "start": "node mqtt-to-mongodb.js"
+      },
+      "dependencies": {
+        "mqtt": "^4.2.8",
+        "mongodb": "^4.1.4"
+      }
+    }
+kind: ConfigMap
+metadata:
+  annotations:
+    use-subpath: "true"
+  labels:
+    io.kompose.service: mqtt-to-mongodb
+  name: mqtt-to-mongodb-cm1

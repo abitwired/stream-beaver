@@ -1,0 +1,8 @@
+name: stream-beaver-helm
+description: A generated Helm Chart for stream-beaver-helm from Skippbox Kompose
+version: 0.0.1
+apiVersion: v2
+keywords:
+  - stream-beaver-helm
+sources:
+home:

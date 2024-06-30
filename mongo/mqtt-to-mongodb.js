@@ -6,9 +6,8 @@ console.log("Reading config file /app/config.json");
 const config = JSON.parse(fs.readFileSync("/app/config.json", "utf-8"));
 
 const mqttBrokerUrl = "mqtt://mqtt-broker:1883";
-const mongoUrl = "mongodb://mongo:27017";
+const mongoUrl = "mongodb://mongo.default.svc.cluster.local:27017";
 const dbName = "mqttData";
-const collectionName = "messages";
 
 const mongoClient = new MongoClient(mongoUrl);
 try {
