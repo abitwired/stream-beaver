@@ -33,11 +33,17 @@ spec:
             - mountPath: /app/mqtt-to-mongodb.js
               name: mqtt-to-mongodb-cm0
               subPath: mqtt-to-mongodb.js
-            - mountPath: /app/package.json
+            - mountPath: /app/auto-indexer.js
               name: mqtt-to-mongodb-cm1
+              subPath: auto-indexer.js
+            - mountPath: /app/util.js
+              name: mqtt-to-mongodb-cm2
+              subPath: util.js
+            - mountPath: /app/package.json
+              name: mqtt-to-mongodb-cm3
               subPath: package.json
             - mountPath: /app/config.json
-              name: mqtt-to-mongodb-cm2
+              name: mqtt-to-mongodb-cm4
               subPath: config.json
           workingDir: /app
       restartPolicy: Always
@@ -50,13 +56,25 @@ spec:
           name: mqtt-to-mongodb-cm0
         - configMap:
             items:
-              - key: package.json
-                path: package.json
+              - key: auto-indexer.js
+                path: auto-indexer.js
             name: mqtt-to-mongodb-cm1
           name: mqtt-to-mongodb-cm1
         - configMap:
             items:
-              - key: config.json
-                path: config.json
+              - key: util.js
+                path: util.js
             name: mqtt-to-mongodb-cm2
           name: mqtt-to-mongodb-cm2
+        - configMap:
+            items:
+              - key: package.json
+                path: package.json
+            name: mqtt-to-mongodb-cm3
+          name: mqtt-to-mongodb-cm3
+        - configMap:
+            items:
+              - key: config.json
+                path: config.json
+            name: mqtt-to-mongodb-cm4
+          name: mqtt-to-mongodb-cm4

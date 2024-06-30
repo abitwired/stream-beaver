@@ -1,19 +1,22 @@
 apiVersion: v1
 data:
-  config.json: |
-    {
-      "topicMappings": {
-        "gsm_message": "network_survey",
-        "cdma_message": "network_survey",
-        "umts_message": "network_survey",
-        "lte_message": "network_survey",
-        "nr_message": "network_survey",
-        "80211_beacon_message": "network_survey",
-        "bluetooth_message": "network_survey",
-        "gnss_message": "network_survey",
-        "device_status_message": "device_status"
-      }
-    }
+  util.js: |
+    /**
+     * Get the deep keys of an object
+     * @param {*} t The object to get the deep keys from
+     * @param {*} pre The prefix
+     * @returns {Array}
+     */
+    const deepKeys = (t, pre = []) =>
+      Array.isArray(t)
+        ? []
+        : Object(t) === t
+        ? Object.entries(t).flatMap(([k, v]) => deepKeys(v, [...pre, k]))
+        : pre.join(".");
+
+    module.exports = {
+      deepKeys,
+    };
 kind: ConfigMap
 metadata:
   annotations:

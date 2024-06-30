@@ -31,6 +31,8 @@ services:
     container_name: mqtt-to-mongodb
     volumes:
       - ./mongo/mqtt-to-mongodb.js:/app/mqtt-to-mongodb.js
+      - ./mongo/auto-indexer.js:/app/auto-indexer.js
+      - ./mongo/util.js:/app/util.js
       - ./mongo/package.json:/app/package.json
       - ./config.json:/app/config.json
     working_dir: /app

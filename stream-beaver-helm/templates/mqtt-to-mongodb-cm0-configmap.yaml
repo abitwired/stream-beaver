@@ -3,13 +3,15 @@ data:
   mqtt-to-mongodb.js: |
     const mqtt = require("mqtt");
     const { MongoClient } = require("mongodb");
+    const AutoIndexer = require("./auto-indexer");
     const fs = require("fs");
+    const autoIndexer = new AutoIndexer();
 
     console.log("Reading config file /app/config.json");
     const config = JSON.parse(fs.readFileSync("/app/config.json", "utf-8"));
 
     const mqttBrokerUrl = "mqtt://mqtt-broker:1883";
-    const mongoUrl = "mongodb://mongo.default.svc.cluster.local:27017";
+    const mongoUrl = "mongodb://mongo:27017";
     const dbName = "mqttData";
 
     const mongoClient = new MongoClient(mongoUrl);
@@ -33,10 +35,23 @@ data:
             const data = { topic, message: JSON.parse(message.toString()) };
             const collectionName =
               config.topicMappings[topic] || "dead_letter_queue";
+
             const result = await mongoClient
               .db(dbName)
               .collection(collectionName)
               .insertOne(data);
+
+            // Add document to the auto indexer. This class
+            // will analyze the data and create an index based
+            // on the data being inserted.
+            autoIndexer.addDocument(collectionName, data, mongoClient, dbName);
+
+            // Create index on topic field
+            mongoClient
+              .db(dbName)
+              .collection(collectionName)
+              .createIndex({ topic: 1 });
+
             console.log(
               `Inserted message with ID: ${result.insertedId} into MongoDB ${collectionName} collection`
             );
